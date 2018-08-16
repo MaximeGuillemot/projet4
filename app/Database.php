@@ -44,7 +44,7 @@ class Database
         $db = $this->dbConnect();
         $q = $db->prepare('SELECT * FROM posts');
         $q-> execute();
-        $data = $q->fetchAll();
+        $data = $q->fetchAll(PDO::FETCH_ASSOC);
         $posts = [];
 
         foreach($data as $post)
