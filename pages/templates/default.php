@@ -33,7 +33,7 @@
 		</header>
 
         <main>
-            <p><?= $content; ?></p>
+            <?= $content; ?>
         </main>
 		
 		<footer>
