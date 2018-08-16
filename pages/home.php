@@ -5,6 +5,7 @@
 <?php foreach($db->getPosts('App\Post') as $post): ?>
 
     <h3><?= $post->getTitle(); ?></h3>
-    <p><?= $post->getContent(); ?></p>
+    <p><?= $post->getExcerpt(); ?></p>
+    <p><a href="index.php?p=post&amp;id=<?= $post->getId(); ?>">Lire la suite</a></p>
 
 <?php endforeach; ?>

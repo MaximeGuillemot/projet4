@@ -33,27 +33,42 @@ class Post
 
     private function setId($id)
     {
-        $this->id = $id;
+        if(!empty($id))
+        {
+            $this->_id = (int) $id; // MySQL returns a string instead of an integer, hence the cast
+        }
     }
 
     private function setTitle($title)
     {
-        $this->_title = $title;
+        if(!empty($title) && (string) $title === $title)
+        {
+            $this->_title = $title;
+        }
     }
 
     private function setContent($content)
     {
-        $this->_content = $content;
+        if(!empty($content) && (string) $content === $content)
+        {
+            $this->_content = $content;
+        }
     }
 
     private function setAuthor($author)
     {
-        $this->_author = $author;
+        if(!empty($author) && (string) $author === $author)
+        {
+            $this->_author = $author;
+        }
     }
 
     private function setAdded($added)
     {
-        $this->_added = $added;
+        if(!empty($added) && (string) $added === $added)
+        {
+            $this->_added = $added;
+        }
     }
 
     public function getTitle()
@@ -64,5 +79,15 @@ class Post
     public function getContent()
     {
         return $this->_content;
+    }
+
+    public function getExcerpt()
+    {
+        return substr($this->getContent(), 0, 300) . '...';
+    }
+
+    public function getId()
+    {
+        return $this->_id;
     }
 }
