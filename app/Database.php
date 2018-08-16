@@ -54,4 +54,16 @@ class Database
 
         return $posts;
     }
+
+    public function getPost($class, $id)
+    {
+        $db = $this->dbConnect();
+        $q = $db->prepare('SELECT * FROM posts WHERE id = :id');
+        $q-> execute(array('id' => $id));
+        $data = $q->fetch();
+
+        $post = new $class($data);
+
+        return $post;
+    }
 }
