@@ -5,6 +5,7 @@ App\Autoloader::initiateAutoloader();
 
 $page = (!empty($_GET['p'])) ? $_GET['p'] : 'home';
 
+ob_start(); // Stores the following content in a variable for dynamic inclusions in the default layout
 switch ($page)
 {
 	case 'home':
@@ -16,5 +17,6 @@ switch ($page)
 	default:
 		echo 'Erreur : page non trouvée.';
 }
+$content = ob_get_clean(); // Saves the previous content in the variable
 
-
+require '../pages/templates/default.php';
