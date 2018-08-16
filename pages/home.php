@@ -2,9 +2,9 @@
 
 <p><a href="index.php?p=post">Accéder à un article particulier.</a></p>
 
-<?php foreach($db->getPosts() as $post): ?>
+<?php foreach($db->getPosts('App\Post') as $post): ?>
 
-    <h3><?= $post->title; ?></h3>
-    <p><?= $post->content; ?></p>
+    <h3><?= $post->getTitle(); ?></h3>
+    <p><?= $post->getContent(); ?></p>
 
 <?php endforeach; ?>

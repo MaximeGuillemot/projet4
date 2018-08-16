@@ -39,12 +39,18 @@ class Database
         return $this->pdo;
     }
 
-    public function getPosts()
+    public function getPosts($class)
     {
         $db = $this->dbConnect();
         $q = $db->prepare('SELECT * FROM posts');
         $q-> execute();
-        $posts = $q->fetchAll(PDO::FETCH_OBJ);
+        $data = $q->fetchAll();
+        $posts = [];
+
+        foreach($data as $post)
+        {
+            $posts[] = new $class($post);
+        }
 
         return $posts;
     }
