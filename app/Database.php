@@ -42,7 +42,7 @@ class Database
     public function getPosts($class)
     {
         $db = $this->dbConnect();
-        $q = $db->prepare('SELECT * FROM posts');
+        $q = $db->prepare('SELECT * FROM posts ORDER BY added DESC');
         $q-> execute();
         $data = $q->fetchAll(PDO::FETCH_ASSOC);
         $posts = [];
@@ -70,7 +70,7 @@ class Database
     public function getComments($class, $id)
     {
         $db = $this->dbConnect();
-        $q = $db->prepare('SELECT * FROM comments WHERE post_id = :id');
+        $q = $db->prepare('SELECT * FROM comments WHERE post_id = :id ORDER BY added DESC');
         $q-> execute(array('id' => $id));
         $data = $q->fetchAll(PDO::FETCH_ASSOC);
         $comments = [];

@@ -2,6 +2,8 @@
 
 namespace App;
 
+use \DateTime;
+
 class Post
 {
     protected $id;
@@ -80,5 +82,16 @@ class Post
     public function getAuthor()
     {
         return $this->author;
+    }
+
+    public function getAdded()
+    {
+        return $this->added;
+    }
+
+    public function getDate()
+    {
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', $this->getAdded());
+        return $date->format('d/m/Y');
     }
 }
