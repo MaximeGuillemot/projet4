@@ -4,12 +4,12 @@ namespace App;
 
 class Autoloader // Loads other classes automatically (no need to require each class when needed)
 {
-    static function initiateAutoloader() // Adds the "autoload" method in the execution pile so that unknown methods are found through that process automatically
+    public static function initiateAutoloader() // Adds the "autoload" method in the execution pile so that unknown methods are found through that process automatically
     {
         spl_autoload_register(array(__CLASS__, 'autoload'));
     }
     
-    static function autoload($class) // Method called everytime a method is not found to help find it (through magic method __autoload())
+    public static function autoload($class) // Method called everytime a method is not found to help find it (through magic method __autoload())
     {
         if(strpos($class, __NAMESPACE__ . '\\') === 0) // Only loads the project's methods (in that namespace); other methods from other sources can use their own autoloaders
         {                                               

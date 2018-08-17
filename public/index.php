@@ -17,7 +17,7 @@ switch ($page)
 		require '../pages/post.php';
 		break;
 	default:
-		echo 'Erreur : page non trouvée.';
+		require '../pages/error.php';
 }
 $content = ob_get_clean(); // Saves the previous content in the variable
 
