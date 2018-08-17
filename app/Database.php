@@ -66,4 +66,20 @@ class Database
 
         return $post;
     }
+
+    public function getComments($class, $id)
+    {
+        $db = $this->dbConnect();
+        $q = $db->prepare('SELECT * FROM comments WHERE post_id = :id');
+        $q-> execute(array('id' => $id));
+        $data = $q->fetchAll(PDO::FETCH_ASSOC);
+        $comments = [];
+
+        foreach($data as $comment)
+        {
+            $comments[] = new $class($comment);
+        }
+
+        return $comments;
+    }
 }

@@ -4,11 +4,10 @@ namespace App;
 
 class Post
 {
-    private $_id;
-    private $_title;
-    private $_content;
-    private $_author;
-    private $_added;
+    protected $id;
+    protected $content;
+    protected $author;
+    protected $added;
 
     public function __construct($data)
     {
@@ -18,7 +17,7 @@ class Post
         }
     }
 
-    private function hydrate($data) // Initiates attributes with data retrieved from DB
+    protected function hydrate($data) // Initiates attributes with data retrieved from DB
     {
         foreach($data as $k => $v) // For each DB column, use the corresponding setter to set attribute value
         {
@@ -31,54 +30,41 @@ class Post
         }
     }
 
-    private function setId($id)
+    protected function setId($id)
     {
         if(!empty($id))
         {
-            $this->_id = (int) $id; // MySQL returns a string instead of an integer, hence the cast
+            $this->id = (int) $id; // MySQL returns a string instead of an integer, hence the cast
         }
     }
 
-    private function setTitle($title)
-    {
-        if(!empty($title) && (string) $title === $title)
-        {
-            $this->_title = $title;
-        }
-    }
-
-    private function setContent($content)
+    protected function setContent($content)
     {
         if(!empty($content) && (string) $content === $content)
         {
-            $this->_content = $content;
+            $this->content = $content;
         }
     }
 
-    private function setAuthor($author)
+    protected function setAuthor($author)
     {
         if(!empty($author) && (string) $author === $author)
         {
-            $this->_author = $author;
+            $this->author = $author;
         }
     }
 
-    private function setAdded($added)
+    protected function setAdded($added)
     {
         if(!empty($added) && (string) $added === $added)
         {
-            $this->_added = $added;
+            $this->added = $added;
         }
-    }
-
-    public function getTitle()
-    {
-        return $this->_title;
     }
 
     public function getContent()
     {
-        return $this->_content;
+        return $this->content;
     }
 
     public function getExcerpt()
@@ -88,6 +74,11 @@ class Post
 
     public function getId()
     {
-        return $this->_id;
+        return $this->id;
+    }
+
+    public function getAuthor()
+    {
+        return $this->author;
     }
 }

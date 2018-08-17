@@ -1,6 +1,6 @@
 <h2>Bienvenue sur la page d'accueil du blog.</h2>
 
-<?php foreach($db->getPosts('App\Post') as $post): ?>
+<?php foreach($db->getPosts('App\Article') as $post): ?>
 
     <h3><?= $post->getTitle(); ?></h3>
     <p><?= $post->getExcerpt(); ?></p>
