@@ -39,11 +39,18 @@ class Database
         return $this->pdo;
     }
 
-    public function getPosts($class)
+    public function countPosts()
+    {
+        $db = $this->dbConnect();
+        $q = $db->query('SELECT COUNT(*) FROM posts');
+        return $q->fetchColumn();
+    }
+
+    public function getAllPosts($class)
     {
         $db = $this->dbConnect();
         $q = $db->prepare('SELECT * FROM posts ORDER BY added DESC');
-        $q-> execute();
+        $q->execute();
         $data = $q->fetchAll(PDO::FETCH_ASSOC);
         $posts = [];
 
@@ -55,11 +62,29 @@ class Database
         return $posts;
     }
 
+    public function getPosts($class, $lowLimit = 0)
+    {
+        $db = $this->dbConnect();
+        $q = $db->prepare('SELECT * FROM posts ORDER BY added DESC LIMIT :lowLimit, 5');
+        $q->bindValue(':lowLimit', intval($lowLimit), PDO::PARAM_INT);
+        $q->execute();
+        $data = $q->fetchAll(PDO::FETCH_ASSOC);
+        $posts = [];
+
+        foreach($data as $post)
+        {
+            
+            $posts[] = new $class($post);
+        }
+
+        return $posts;
+    }
+
     public function getPost($class, $id)
     {
         $db = $this->dbConnect();
         $q = $db->prepare('SELECT * FROM posts WHERE id = :id');
-        $q-> execute(array('id' => $id));
+        $q->execute(array('id' => $id));
         $data = $q->fetch();
 
         $post = new $class($data);
@@ -71,7 +96,7 @@ class Database
     {
         $db = $this->dbConnect();
         $q = $db->prepare('SELECT * FROM comments WHERE post_id = :id ORDER BY added DESC');
-        $q-> execute(array('id' => $id));
+        $q->execute(array('id' => $id));
         $data = $q->fetchAll(PDO::FETCH_ASSOC);
         $comments = [];
 
