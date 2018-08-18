@@ -46,6 +46,13 @@ class Database
         return $q->fetchColumn();
     }
 
+    public function countComments()
+    {
+        $db = $this->dbConnect();
+        $q = $db->query('SELECT COUNT(*) FROM comments');
+        return $q->fetchColumn();
+    }
+
     public function getAllPosts($class)
     {
         $db = $this->dbConnect();
@@ -92,7 +99,7 @@ class Database
         return $post;
     }
 
-    public function getComments($class, $id)
+    public function getAllComments($class, $id)
     {
         $db = $this->dbConnect();
         $q = $db->prepare('SELECT * FROM comments WHERE post_id = :id ORDER BY added DESC');
@@ -102,6 +109,24 @@ class Database
 
         foreach($data as $comment)
         {
+            $comments[] = new $class($comment);
+        }
+
+        return $comments;
+    }
+
+    public function getComments($class, $lowLimit = 0)
+    {
+        $db = $this->dbConnect();
+        $q = $db->prepare('SELECT * FROM comments ORDER BY added DESC LIMIT :lowLimit, 5');
+        $q->bindValue(':lowLimit', intval($lowLimit), PDO::PARAM_INT);
+        $q->execute();
+        $data = $q->fetchAll(PDO::FETCH_ASSOC);
+        $comments = [];
+
+        foreach($data as $comment)
+        {
+            
             $comments[] = new $class($comment);
         }
 

@@ -2,7 +2,7 @@
 
 <?php 
 $post = $db->getPost('App\Article', $_GET['id']); 
-$comments = $db->getComments('App\Comment', $_GET['id']); 
+$comments = $db->getComments('App\Comment', $_GET['c']); 
 ?>
 
 <article>
@@ -19,5 +19,24 @@ $comments = $db->getComments('App\Comment', $_GET['id']);
 <p>Commentaire de <?= $comment->getAuthor(); ?> le <?= $comment->getDate() . ' à ' . $comment->getTime(); ?></p>
 <p><?= $comment->getContent(); ?></p>
 
-<?php endforeach; ?>
+<?php 
+
+endforeach; 
+
+$nbPages = (int) ($db->countComments() / 5);
+
+if($nbPages > 1)
+{
+?>
+    <p>Pages : 
+        <?php
+            for($i = 0; $i <= $nbPages; $i++)
+            {
+                echo '<a href="index.php?p=post&amp;id=' . (int) $_GET['id'] . '&amp;c=' . $i*5 . '">' . ($i+1) . ' ';
+            }
+        ?>
+    </p>
+<?php
+}
+?>
 
