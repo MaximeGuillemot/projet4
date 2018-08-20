@@ -1,8 +1,16 @@
-<p><a href="index.php">Accéder à l'accueil.</a></p>
-
 <?php 
-$post = $db->getPost('App\Article', $_GET['id']); 
-$comments = $db->getComments('App\Comment', $_GET['c']); 
+$post = $db->getPost('App\Article', $_GET['id']);
+
+if(!isset($_GET['c'])) 
+{
+    $firstComment = 0;
+}
+else
+{
+    $firstComment = (int) $_GET['c'];
+}
+
+$comments = $db->getComments('App\Comment', $firstComment);
 ?>
 
 <article>
@@ -32,7 +40,7 @@ if($nbPages > 1)
         <?php
             for($i = 0; $i <= $nbPages; $i++)
             {
-                echo '<a href="index.php?p=post&amp;id=' . (int) $_GET['id'] . '&amp;c=' . $i*5 . '">' . ($i+1) . ' ';
+                echo '<a href="index.php?p=post&amp;id=' . $firstComment . '&amp;c=' . $i*5 . '">' . ($i+1) . '</a> ';
             }
         ?>
     </p>

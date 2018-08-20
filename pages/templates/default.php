@@ -29,11 +29,15 @@
 
 	<body>
 		<header>
-            <h1>Blog de Jean Forteroche</h1>
+			<h1>Blog de Jean Forteroche</h1>
+			
+			<p><a href="index.php?p=register">S'inscrire</a></p>
+
+			<p><a href="index.php">Accéder à l'accueil.</a></p>
 		</header>
 
         <main>
-            <?= $content; ?>
+			<?= $content; ?>
         </main>
 		
 		<footer>

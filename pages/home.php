@@ -3,9 +3,14 @@
 <?php 
 
 if(!isset($_GET['a']))
+{
     $firstPost = 0;
+}
 else
+{
     $firstPost = (int) $_GET['a'];
+}
+    
 
 foreach($db->getPosts('App\Article', $firstPost) as $post): ?>
 
@@ -26,7 +31,7 @@ if($nbPages > 1)
         <?php
             for($i = 0; $i <= $nbPages; $i++)
             {
-                echo '<a href="index.php?home&amp;a=' . $i*5 . '">' . ($i+1) . ' ';
+                echo '<a href="index.php?home&amp;a=' . $i*5 . '">' . ($i+1) . '</a> ';
             }
         ?>
     </p>

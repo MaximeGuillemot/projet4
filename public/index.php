@@ -21,6 +21,9 @@ switch ($page)
 	case 'post':
 		require '../pages/post.php';
 		break;
+	case 'register':
+		require '../pages/register.php';
+		break;
 	default:
 		require '../pages/error.php';
 }
