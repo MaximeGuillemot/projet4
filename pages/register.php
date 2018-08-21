@@ -27,7 +27,23 @@ if(isset($_POST['register']))
     {
         $userdb = new UserDB($db, $user);
         $userdb->addUser();
-        echo 'gg tu t\'es inscrit';
+        $errors = $userdb->getErrors();
+
+        if(!empty($errors))
+        {
+            foreach($errors as $error)
+            {
+                echo '<p>' . $error . '</p>';
+            }
+
+            unset($userdb, $login, $email, $pass, $passCheck);
+
+            $_POST['register'] = null;
+        }
+        else
+        {
+            echo 'gg tu t\'es inscrit';
+        }
     }
     else
     {

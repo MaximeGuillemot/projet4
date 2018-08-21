@@ -9,6 +9,7 @@ class UserDB
     private $email;
     private $access;
     private $pdo;
+    private $errors = [];
 
     const WRONG_INFO = 1;
     const LOGIN_NOT_AVAILABLE = 2;
@@ -71,17 +72,22 @@ class UserDB
     {
         if(empty($this->login) && empty($this->password) && empty($this->email))
         {
-            return self::WRONG_INFO;
+            $this->errors[] = self::WRONG_INFO;
         }
 
         if(!$this->loginAvailability())
         {
-            return self::LOGIN_NOT_AVAILABLE;
+            $this->errors[] = self::LOGIN_NOT_AVAILABLE;
         }
 
         if(!$this->emailAvailability())
         {
-            return self::EMAIL_NOT_AVAILABLE;
+            $this->errors[] = self::EMAIL_NOT_AVAILABLE;
+        }
+
+        if(!empty($this->errors))
+        {
+            return null;
         }
 
         $q = $this->pdo->prepare('INSERT INTO users(login, password, email, access) VALUES(:login, :password, :email, 0)');
@@ -122,5 +128,29 @@ class UserDB
         }
 
         return true;
+    }
+
+    public function getErrors()
+    {
+        $errors = [];
+        foreach($this->errors as $error)
+        {
+            switch($error)
+            {
+                case self::WRONG_INFO:
+                    $errors[] = 'Les informations fournies pour la création d\'un nouveau compte sont erronnées.';
+                    break;
+                case self::LOGIN_NOT_AVAILABLE:
+                    $errors[] = 'Le pseudo choisi est déjà utilisé, veuillez en choisir un autre.';
+                    break;
+                case self::EMAIL_NOT_AVAILABLE:
+                    $errors[] = 'L\'adresse e-mail choisie est déjà utilisée, veuillez en choisir une autre.';
+                    break;
+                default:
+                    $errors = [];
+            }
+        }
+
+        return $errors;
     }
 }
