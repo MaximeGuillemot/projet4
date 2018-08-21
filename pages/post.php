@@ -1,5 +1,5 @@
 <?php 
-$post = $db->getPost('App\Article', $_GET['id']);
+$post = $postdb->getPost('App\Article', (int) $_GET['id']);
 
 if(!isset($_GET['c'])) 
 {
@@ -10,7 +10,7 @@ else
     $firstComment = (int) $_GET['c'];
 }
 
-$comments = $db->getComments('App\Comment', $firstComment);
+$comments = $postdb->getComments('App\Comment', $post->getId(), $firstComment);
 ?>
 
 <article>
@@ -31,7 +31,7 @@ $comments = $db->getComments('App\Comment', $firstComment);
 
 endforeach; 
 
-$nbPages = (int) ($db->countComments() / 5);
+$nbPages = (int) ($postdb->countComments() / 5);
 
 if($nbPages > 1)
 {
@@ -40,7 +40,7 @@ if($nbPages > 1)
         <?php
             for($i = 0; $i <= $nbPages; $i++)
             {
-                echo '<a href="index.php?p=post&amp;id=' . $firstComment . '&amp;c=' . $i*5 . '">' . ($i+1) . '</a> ';
+                echo '<a href="index.php?p=post&amp;id=' . $post->getId() . '&amp;c=' . $i*5 . '">' . ($i+1) . '</a> ';
             }
         ?>
     </p>

@@ -1,16 +1,22 @@
 <?php
 
+use App\Config;
+use App\DB\DBConnect;
+use App\DB\PostDB;
+
 require '../app/Autoloader.php';
 App\Autoloader::initiateAutoloader();
 
 $page = (!empty($_GET['p'])) ? $_GET['p'] : 'home';
 
-$config = App\Config::getInstance();
-$db = new App\Database(
+$config = Config::getInstance();
+$db = new DBConnect(
 	$config->getSetting('db_name'), 
 	$config->getSetting('db_user'), 
 	$config->getSetting('db_pass'), 
 	$config->getSetting('db_host'));
+$postdb = new PostDB($db);
+
 
 ob_start(); // Stores the following content in a variable for dynamic inclusions in the default layout
 switch ($page)

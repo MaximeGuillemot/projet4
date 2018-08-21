@@ -12,7 +12,7 @@ else
 }
     
 
-foreach($db->getPosts('App\Article', $firstPost) as $post): ?>
+foreach($postdb->getPosts('App\Article', $firstPost) as $post): ?>
 
     <h3><?= $post->getTitle(); ?></h3>
     <p><?= $post->getExcerpt(); ?></p>
@@ -22,7 +22,7 @@ foreach($db->getPosts('App\Article', $firstPost) as $post): ?>
 
 endforeach; 
 
-$nbPages = (int) ($db->countPosts() / 5);
+$nbPages = (int) ($postdb->countPosts() / 5);
 
 if($nbPages > 1)
 {
