@@ -2,6 +2,7 @@
 session_start();
 
 use App\Register;
+use App\DB\UserDB;
 ?>
 
 <h2>Inscription</h2>
@@ -11,16 +12,21 @@ if(isset($_POST['register']))
 {
     $login = htmlspecialchars($_POST['login']);
     $email = htmlspecialchars($_POST['email']);
+    $pass = htmlspecialchars($_POST['pass']);
+    $passCheck = htmlspecialchars($_POST['passCheck']);
+    $user = array(
+        'login' => $login,
+        'email' => $email,
+        'pass' => $pass,
+        'passCheck' => $passCheck    
+    );
     
-    $register = new Register(array(
-        'login' => $_POST['login'],
-        'email' => $_POST['email'],
-        'pass' => $_POST['pass'],
-        'passCheck' => $_POST['passCheck']    
-    ));
+    $register = new Register($user);
 
     if(empty($register->getErrors()))
     {
+        $userdb = new UserDB($db, $user);
+        $userdb->addUser();
         echo 'gg tu t\'es inscrit';
     }
     else
