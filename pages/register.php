@@ -8,17 +8,19 @@ use App\DB\UserDB;
 <h2>Inscription</h2>
 
 <?php
-if(isset($_POST['register']))
+if(isset($_POST['register']) && $_SESSION['activationKey'] === $_POST['activationKey'])
 {
     $login = htmlspecialchars($_POST['login']);
     $email = htmlspecialchars($_POST['email']);
     $pass = htmlspecialchars($_POST['pass']);
     $passCheck = htmlspecialchars($_POST['passCheck']);
+    $activationKey = htmlspecialchars($_POST['activationKey']);
     $user = array(
         'login' => $login,
         'email' => $email,
         'pass' => $pass,
-        'passCheck' => $passCheck    
+        'passCheck' => $passCheck,
+        'activationKey' => $activationKey
     );
     
     $register = new Register($user);
@@ -26,8 +28,7 @@ if(isset($_POST['register']))
     if(empty($register->getErrors()))
     {
         $userdb = new UserDB($db, $user);
-        $userdb->addUser();
-        $errors = $userdb->getErrors();
+        $errors = $userdb->getErrors();       
 
         if(!empty($errors))
         {
@@ -36,12 +37,12 @@ if(isset($_POST['register']))
                 echo '<p>' . $error . '</p>';
             }
 
-            unset($userdb, $login, $email, $pass, $passCheck);
-
-            $_POST['register'] = null;
+            unset($userdb, $_POST['register']);
         }
         else
         {
+            $userdb->sendActivationMail();
+            $userdb->addUser();
             echo 'gg tu t\'es inscrit';
         }
     }
@@ -58,6 +59,8 @@ if(isset($_POST['register']))
 
 if(!isset($_POST['register']))
 {
+    $activationKey = md5(uniqid(rand(), TRUE));
+    $_SESSION['activationKey'] = $activationKey;
 ?>
     <div>
         <form method="post">
@@ -79,6 +82,7 @@ if(!isset($_POST['register']))
             </p>
 
             <div>
+                <input type="hidden" name="activationKey" value="<?= $activationKey; ?>">
                 <input type="submit" name="register" value="Valider l'inscription" class="submitBtn">
             </div>
         </form>
