@@ -48,20 +48,7 @@ class SendActivationMail extends SendMail
         }
     }
 
-    protected function getMessage()
-    {
-        return $this->message;
-    }
+    protected function getLogin() { return $this->login; }
 
-    protected function getLogin()
-    {
-        return $this->login;
-    }
-
-    protected function getActivationKey()
-    {
-        return $this->activationKey;
-    }
-
-
+    protected function getActivationKey() { return $this->activationKey; }
 }

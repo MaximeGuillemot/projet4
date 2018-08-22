@@ -7,9 +7,8 @@ class SendMail
     protected $config;
     protected $headers;
     protected $subject;
-    protected $message = '';
+    protected $message;
     protected $email;
-
     
     public function __construct($data)
     {
@@ -71,21 +70,32 @@ class SendMail
         }
     }
 
+    public function sendMail($subject = null, $message = null)
+    {
+        if(empty($subject) || (string) $subject !== $subject)
+        {
+            $subject = $this->getSubject();
+        }
+        if(empty($message) || (string) $message !== $message)
+        {
+            $message = $this->getMessage();
+        }
+
+        if(empty($this->getEmail()) || empty($subject) || empty($message) || empty($this->getHeaders()))
+        {
+            return null;
+        }
+
+        mail($this->getEmail(), $subject, $message, $this->getHeaders());
+    }
+
     protected function getHeaders() { return $this->headers; }
 
     protected function getSubject() { return $this->subject; }
 
     protected function getEmail() { return $this->email; }
 
-    public function sendMail()
-    {
-        if(empty($this->getEmail()) || empty($this->getSubject()) || empty($this->getMessage()) || empty($this->getHeaders()))
-        {
-            return null;
-        }
-        
-        mail($this->getEmail(), $this->getSubject(), $this->getMessage(), $this->getHeaders());
-    }
+    protected function getMessage() { return $this->message; }
 
 }
 
