@@ -19,7 +19,7 @@ class Config
 
     public function __construct()
     {
-        $this->_settings = require dirname(__DIR__) . '/config/config.php';
+        $this->_settings = require dirname(__DIR__) . '/config/dbconfig.php';
     }
 
     public function getSetting($key)

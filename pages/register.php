@@ -2,6 +2,7 @@
 session_start();
 
 use App\Register;
+use App\SendActivationMail;
 use App\DB\UserDB;
 ?>
 
@@ -41,8 +42,9 @@ if(isset($_POST['register']) && $_SESSION['activationKey'] === $_POST['activatio
         }
         else
         {
-            $userdb->sendActivationMail();
-            $userdb->addUser();
+            $sendMail = new SendActivationMail($user);
+            $sendMail->sendMail();
+            //$userdb->addUser();
             echo 'gg tu t\'es inscrit';
         }
     }
