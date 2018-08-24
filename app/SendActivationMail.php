@@ -4,51 +4,41 @@ namespace App;
 
 class SendActivationMail extends SendMail
 {
-    protected $activationSubject;
-    protected $activationMessage;
     protected $activationKey;
-    protected $login;
+    protected $siteUrl;
     
     // Info sent by $user
 
-    protected function setLogin($login)
-    {  
-        if(!empty($login) && (string) $login === $login)
-        {
-            $this->login = htmlspecialchars($login);
-        }
-    }
-
     protected function setActivationKey($activationKey)
     {
-        if(!empty($activationKey) && (string) $activationKey === $activationKey)
+        if(!empty($activationKey))
         {
-            $this->activationKey = htmlspecialchars($activationKey);
+            $this->activationKey = $activationKey;
         }
     }
 
-    // Info sent by mailconfig
+    // Info sent by config
 
-    protected function setActivationSubject($activationSubject)
+    protected function setSiteUrl($siteUrl)
     {
-        if(!empty($activationSubject) && (string) $activationSubject === $activationSubject)
+        if(!empty($siteUrl))
         {
-            $this->setSubject(htmlspecialchars($activationSubject));
+            $this->siteUrl = $siteUrl;
         }
     }
     
-    protected function setActivationMessage($activationMessage)
+    protected function setActivationMessage()
     {
-        if(!empty($activationMessage) && (string) $activationMessage === $activationMessage)
-        {
-            $activationMessage = str_replace("%LOGIN%", urlencode($this->getLogin()), $activationMessage);
-            $activationMessage = str_replace("%ACTIVATIONKEY%", urlencode($this->getActivationKey()), $activationMessage);
+        $activationKey = $this->getActivationKey();
+        $siteUrl = $this->getSiteUrl();
 
-            $this->setMessage($activationMessage);
-        }
+        require dirname(__DIR__) . '/pages/templates/activationmail.php';
+
+        $this->setSubject($subject);
+        $this->setMessage($message);
     }
 
-    protected function getLogin() { return $this->login; }
-
     protected function getActivationKey() { return $this->activationKey; }
+
+    protected function getSiteUrl() { return $this->siteUrl; }
 }

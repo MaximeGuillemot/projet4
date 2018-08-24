@@ -4,7 +4,7 @@ namespace App;
 
 class Config
 {
-    private $_settings = [];
+    private $settings = [];
     private static $_instance;
 
     public static function getInstance() // Allows the class to be instantiated but only once so we deal with an object but always the same one (singleton)
@@ -19,16 +19,17 @@ class Config
 
     public function __construct()
     {
-        $this->_settings = require dirname(__DIR__) . '/config/dbconfig.php';
+        require dirname(__DIR__) . '/config/config.php';
+        $this->settings = $dbconfig;
     }
 
     public function getSetting($key)
     {
-        if(!isset($this->_settings[$key]))
+        if(!isset($this->settings[$key]))
         {
             return null;
         }
 
-        return $this->_settings[$key];
+        return $this->settings[$key];
     }
 }

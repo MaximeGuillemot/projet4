@@ -4,8 +4,7 @@ namespace App;
 
 class SendMail
 {
-    protected $config;
-    protected $headers;
+    protected $mailHeaders;
     protected $subject;
     protected $message;
     protected $email;
@@ -14,9 +13,9 @@ class SendMail
     {
         if(!empty($data))
         {
-            $config = require dirname(__DIR__) . '/config/mailconfig.php';
+            require dirname(__DIR__) . '/config/config.php';
 
-            foreach($config as $k => $v)
+            foreach($siteconfig as $k => $v)
             {
                 $data[$k] = $v;
             }
@@ -38,33 +37,33 @@ class SendMail
         }
     }
     
-    protected function setHeaders($headers)
+    protected function setMailHeaders($mailHeaders)
     {
-        if(!empty($headers) && (string) $headers === $headers)
+        if(!empty($mailHeaders))
         {
-            $this->headers = htmlspecialchars($headers);
+            $this->mailHeaders = $mailHeaders;
         }
     }
 
     protected function setSubject($subject)
     {
-        if(!empty($subject) && (string) $subject === $subject)
+        if(!empty($subject))
         {
-            $this->subject = htmlspecialchars($subject);
+            $this->subject = $subject;
         }
     }
 
     protected function setEmail($email)
     {
-        if(!empty($email) && (string) $email === $email)
+        if(!empty($email))
         {
-            $this->email = htmlspecialchars($email);
+            $this->email = $email;
         }
     }
 
     protected function setMessage($message)
     {
-        if(!empty($message) && (string) $message === $message)
+        if(!empty($message))
         {
             $this->message = $message;
         }
@@ -72,30 +71,30 @@ class SendMail
 
     public function sendMail($subject = null, $message = null)
     {
-        if(empty($subject) || (string) $subject !== $subject)
+        if(!empty($subject))
         {
-            $subject = $this->getSubject();
+            $this->setSubject($subject);
         }
-        if(empty($message) || (string) $message !== $message)
+        if(!empty($message))
         {
-            $message = $this->getMessage();
+            $this->setMessage($message);
         }
 
-        if(empty($this->getEmail()) || empty($subject) || empty($message) || empty($this->getHeaders()))
+        if(empty($this->getEmail()) || empty($this->getSubject()) || empty($this->getMessage()) || empty($this->getMailHeaders()))
         {
             return null;
         }
 
-        mail($this->getEmail(), $subject, $message, $this->getHeaders());
+
+        mail($this->getEmail(), $this->getSubject(), $this->getMessage(), $this->getMailHeaders());
     }
 
-    protected function getHeaders() { return $this->headers; }
+    protected function getMailHeaders() { return $this->mailHeaders; }
 
     protected function getSubject() { return $this->subject; }
 
     protected function getEmail() { return $this->email; }
 
     protected function getMessage() { return $this->message; }
-
 }
 
