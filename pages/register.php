@@ -44,7 +44,7 @@ if(isset($_POST['register']) && $_SESSION['activationKey'] === $_POST['activatio
         {
             $sendMail = new SendActivationMail($user);
             $sendMail->sendMail();
-            //$userdb->addUser();
+            $userdb->addUser();
             echo 'gg tu t\'es inscrit';
         }
     }
@@ -52,7 +52,7 @@ if(isset($_POST['register']) && $_SESSION['activationKey'] === $_POST['activatio
     {
         foreach($register->getErrors() as $error)
         {
-            echo '<p>' . $error . '</p><br>';
+            echo '<p>' . $error . '</p>';
         }
 
         $_POST['register'] = null;

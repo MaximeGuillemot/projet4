@@ -14,7 +14,7 @@ $mailHeaders .= 'Reply-To: no-reply@jeanforteroche.fr'  . "\r\n";
 $mailHeaders .= 'Return-Path: no-reply@jeanforteroche.fr'  . "\r\n";
 
 $siteconfig = array(
-    "siteUrl" => "http://localhost/projet4/",
+    "siteUrl" => "http://localhost/projet4",
     "mailHeaders" => $mailHeaders,
     "activationMessage" => ""
 );

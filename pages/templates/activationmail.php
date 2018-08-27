@@ -1,7 +1,7 @@
 <?php
 $subject = 'Activation de votre compte - Blog de Jean Forteroche';
 
-$message = '
+$message = <<<MAILCONTENT
 <!DOCTYPE HTML>
 <html lang="fr">
     <head>
@@ -25,13 +25,12 @@ $message = '
                 Pour activer votre compte, veuillez cliquer sur le lien ci-dessous
                 ou le copier/coller dans votre navigateur web.<br><br>
 
-                <a href="' . $siteUrl . 'public/index.php?p=register$amp;key= ' . $activationKey . '">'
-                . $siteUrl . 'public/index.php?p=register$amp;key=' . $activationKey . '</a><br><br>
+                <a href="$siteUrl/public/index.php?p=register&key=$activationKey">$siteUrl/public/index.php?p=register&key=$activationKey</a><br><br>
 
-                Si vous n\'avez pas tenté de vous inscrire sur le blog de Jean Forteroche</a>, merci d\'ignorer ce message.<br><br>
+                Si vous n'avez pas tenté de vous inscrire sur le blog de Jean Forteroche</a>, merci d'ignorer ce message.<br><br>
 
-                Le lien d\'activation n\'est valide que pendant 24 heures. Si l\'activation n\'est pas finalisée passé ce délai,
-                veuillez cliquer sur le lien pour réinitialiser l\'inscription.<br>
+                Le lien d'activation n'est valide que pendant 24 heures. Si l'activation n'est pas finalisée passé ce délai,
+                veuillez cliquer sur le lien pour réinitialiser l'inscription.<br>
             </p>
             <p id="disclaimer">
                 ----------------<br><br>
@@ -40,5 +39,6 @@ $message = '
             </p>
         </div>
     </body>
-</html>';
+</html>'
+MAILCONTENT;
 ?>

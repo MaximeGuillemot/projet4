@@ -3,11 +3,11 @@ namespace App;
 
 class Register
 {
-    private $_login;
-    private $_email;
-    private $_pass;
-    private $_passCheck;
-    private $_errors = [];
+    private $login;
+    private $email;
+    private $pass;
+    private $passCheck;
+    private $errors = [];
 
     const WRONG_LOGIN = 1;
     const WRONG_EMAIL = 2;
@@ -20,7 +20,7 @@ class Register
         if(!empty($data))
         {
             $this->hydrate($data);
-            $this->checkPass($this->_pass, $this->_passCheck);
+            $this->checkPass($this->pass, $this->passCheck);
         }
     }
 
@@ -41,53 +41,53 @@ class Register
     {
         if(empty($login))
         {
-            $this->_errors[] = self::MISSING_INFO;
+            $this->errors[] = self::MISSING_INFO;
         }
-        elseif((string) $login !== $login || !preg_match('#^[a-zA-Zàâäéèêëîïôöûü0-9]{2,30}$#', $login))
+        elseif(!preg_match('#^[a-zA-Zàâäéèêëîïôöûü0-9]{2,30}$#', $login))
         {
-            $this->_errors[] = self::WRONG_LOGIN;
+            $this->errors[] = self::WRONG_LOGIN;
         }
 
-        $this->_login = htmlspecialchars($login);
+        $this->login = $login;
     }
 
     private function setEmail($email)
     {
         if(empty($email))
         {
-            $this->_errors[] = self::MISSING_INFO;
+            $this->errors[] = self::MISSING_INFO;
         }
-        elseif(strlen($email) > 255 || (string) $email !== $email || !filter_var($email, FILTER_VALIDATE_EMAIL))
+        elseif(strlen($email) > 255 || !filter_var($email, FILTER_VALIDATE_EMAIL))
         {
-            $this->_errors[] = self::WRONG_EMAIL;
+            $this->errors[] = self::WRONG_EMAIL;
         }
 
-        $this->_login = htmlspecialchars($email);
+        $this->email = $email;
     }
 
     private function setPass($pass)
     {
         if(empty($pass))
         {
-            $this->_errors[] = self::MISSING_INFO;
+            $this->errors[] = self::MISSING_INFO;
         }
-        elseif(!preg_match('#^(?=.{8,})(?=.*[a-z])(?=.*[0-9]).*$#', $pass))
+        elseif(!preg_match('#^(?=.{8,})(?=.*[a-z])(?=.*[0-9]).*$#', $pass)) // At least 1 capital letter, 1 number, and 8+ characters total
         {
-            $this->_errors[] = self::WRONG_PASS;
+            $this->errors[] = self::WRONG_PASS;
         }
 
-        $this->_pass = htmlspecialchars($pass);
+        $this->pass = $pass;
     }
 
     private function setPassCheck($passCheck)
     {
         if(empty($passCheck))
         {
-            $this->_errors[] = self::MISSING_INFO;
+            $this->errors[] = self::MISSING_INFO;
         }
         else
         {
-            $this->_passCheck = htmlspecialchars($passCheck);
+            $this->passCheck = $passCheck;
         }
     }
 
@@ -95,14 +95,14 @@ class Register
     {
         if(!empty($pass) && $pass !== $passCheck)
         {
-            $this->_errors[] = self::WRONG_PASS_CHECK;
+            $this->errors[] = self::WRONG_PASS_CHECK;
         }
     }
 
     public function getErrors()
     {
         $errors = [];
-        foreach($this->_errors as $error)
+        foreach($this->errors as $error)
         {
             switch($error)
             {

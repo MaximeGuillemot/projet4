@@ -39,41 +39,41 @@ class UserDB
 
     private function setLogin($login)
     {
-        if(!empty($login) && (string) $login === $login)
+        if(!empty($login))
         {
-            $this->login = htmlspecialchars($login);
+            $this->login = $login;
         }
     }
 
     private function setPass($password)
     {
-        if(!empty($password) && (string) $password === $password)
+        if(!empty($password))
         {
-            $this->password = password_hash(htmlspecialchars($password), PASSWORD_DEFAULT, ["cost" => 10]);
+            $this->password = password_hash($password, PASSWORD_DEFAULT, ["cost" => 10]);
         }
     }
 
     private function setEmail($email)
     {
-        if(!empty($email) && (string) $email === $email)
+        if(!empty($email))
         {
-            $this->email = htmlspecialchars($email);
+            $this->email = $email;
         }
     }
 
     private function setAccess($access)
     {
-        if(!empty($access) && (int) $access === $access)
+        if(!empty($access))
         {
-            $this->access = htmlspecialchars($access);
+            $this->access = $access;
         }
     }
 
     private function setActivationKey($activationKey)
     {
-        if(!empty($activationKey) && (string) $activationKey === $activationKey)
+        if(!empty($activationKey))
         {
-            $this->activationKey = htmlspecialchars($activationKey);
+            $this->activationKey = $activationKey;
         }
     }
 

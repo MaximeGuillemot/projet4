@@ -53,7 +53,6 @@ class PostDB
 
         foreach($data as $post)
         {
-            
             $posts[] = new $class($post);
         }
 
