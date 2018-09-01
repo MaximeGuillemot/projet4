@@ -30,6 +30,9 @@ switch ($page)
 	case 'register':
 		require '../pages/register.php';
 		break;
+	case 'activation':
+		require '../pages/activation.php';
+		break;
 	default:
 		require '../pages/error.php';
 }

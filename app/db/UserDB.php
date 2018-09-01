@@ -15,6 +15,10 @@ class UserDB
     const WRONG_INFO = 1;
     const LOGIN_NOT_AVAILABLE = 2;
     const EMAIL_NOT_AVAILABLE = 3;
+    const NEW_ACCOUNT = 4;
+    const MEMBER_ACCOUNT = 5;
+    const ADMIN_ACCOUNT = 6;
+    const ACCOUNT_NOT_FOUND = 7;
 
     public function __construct(DBConnect $db, $data)
     {
@@ -97,9 +101,7 @@ class UserDB
     private function loginAvailability()
     {
         $q = $this->pdo->prepare('SELECT COUNT(*) FROM users WHERE login = :login');
-        $q->execute(array(
-            'login' => $this->login
-        ));
+        $q->execute(array('login' => $this->login));
         $loginTaken = $q->fetchColumn();
 
         if($loginTaken)
@@ -113,9 +115,7 @@ class UserDB
     private function emailAvailability()
     {
         $q = $this->pdo->prepare('SELECT COUNT(*) FROM users WHERE email = :email');
-        $q->execute(array(
-            'email' => $this->email
-        ));
+        $q->execute(array('email' => $this->email));
         $emailTaken = $q->fetchColumn();
 
         if($emailTaken)
@@ -124,6 +124,31 @@ class UserDB
         }
 
         return true;
+    }
+
+    public function getAccess()
+    {
+        if(!empty($this->activationKey))
+        {
+            $q = $this->pdo->prepare('SELECT access FROM users WHERE activationKey = :key');
+            $q->execute(array('key' => $this->activationKey));
+            $access = $q->fetchColumn();
+        }
+        
+        switch($access)
+        {
+            case 1:
+                return self::NEW_ACCOUNT;
+                break;
+            case 2:
+                return self::MEMBER_ACCOUNT;
+                break;
+            case 3:
+                return self::ADMIN_ACCOUNT;
+                break;
+            default:
+                return self::ACCOUNT_NOT_FOUND;
+        }
     }
 
     public function getErrors()

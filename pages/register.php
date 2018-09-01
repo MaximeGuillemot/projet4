@@ -9,53 +9,68 @@ use App\DB\UserDB;
 <h2>Inscription</h2>
 
 <?php
-if(isset($_POST['register']) && $_SESSION['activationKey'] === $_POST['activationKey'])
+
+if(isset($_POST['register']) && isset($_POST['g-recaptcha-response']) && $_SESSION['activationKey'] === $_POST['activationKey'])
 {
-    $login = htmlspecialchars($_POST['login']);
-    $email = htmlspecialchars($_POST['email']);
-    $pass = htmlspecialchars($_POST['pass']);
-    $passCheck = htmlspecialchars($_POST['passCheck']);
-    $activationKey = htmlspecialchars($_POST['activationKey']);
-    $user = array(
-        'login' => $login,
-        'email' => $email,
-        'pass' => $pass,
-        'passCheck' => $passCheck,
-        'activationKey' => $activationKey
-    );
-    
-    $register = new Register($user);
+    $secret = '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'; // Localhost test key
+    $response = $_POST['g-recaptcha-response'];
+    $remoteip = $_SERVER['REMOTE_ADDR'];
+    $api_url = "https://www.google.com/recaptcha/api/siteverify?secret=" . $secret . "&response=" . $response . "&remoteip=" . $remoteip;
 
-    if(empty($register->getErrors()))
+    $decode = json_decode(file_get_contents($api_url), true);
+
+    if($decode['success'] === true)
     {
-        $userdb = new UserDB($db, $user);
-        $errors = $userdb->getErrors();       
+        $login = htmlspecialchars($_POST['login']);
+        $email = htmlspecialchars($_POST['email']);
+        $pass = htmlspecialchars($_POST['pass']);
+        $passCheck = htmlspecialchars($_POST['passCheck']);
+        $activationKey = htmlspecialchars($_POST['activationKey']);
+        $user = array(
+            'login' => $login,
+            'email' => $email,
+            'pass' => $pass,
+            'passCheck' => $passCheck,
+            'activationKey' => $activationKey
+        );
+        
+        $register = new Register($user);
 
-        if(!empty($errors))
+        if(empty($register->getErrors()))
         {
-            foreach($errors as $error)
+            $userdb = new UserDB($db, $user);
+            $errors = $userdb->getErrors();       
+
+            if(!empty($errors))
+            {
+                foreach($errors as $error)
+                {
+                    echo '<p>' . $error . '</p>';
+                }
+
+                unset($userdb, $_POST['register']);
+            }
+            else
+            {
+                //$sendMail = new SendActivationMail($user);
+                //$sendMail->sendMail();
+                //$userdb->addUser();
+                echo 'gg tu t\'es inscrit';
+            }
+        }
+        else
+        {
+            foreach($register->getErrors() as $error)
             {
                 echo '<p>' . $error . '</p>';
             }
 
-            unset($userdb, $_POST['register']);
-        }
-        else
-        {
-            $sendMail = new SendActivationMail($user);
-            $sendMail->sendMail();
-            $userdb->addUser();
-            echo 'gg tu t\'es inscrit';
+            $_POST['register'] = null;
         }
     }
     else
     {
-        foreach($register->getErrors() as $error)
-        {
-            echo '<p>' . $error . '</p>';
-        }
-
-        $_POST['register'] = null;
+        echo '<p>Une erreur est survenue. Veuillez recommencer l\'inscription.</p>';
     }
 }
 
@@ -84,6 +99,7 @@ if(!isset($_POST['register']))
             </p>
 
             <div>
+                <input type="hidden" name="g-recaptcha-response" value="6LemuGwUAAAAAHh2vDB1_EPxFL_ahyZabT4V2bdE">
                 <input type="hidden" name="activationKey" value="<?= $activationKey; ?>">
                 <input type="submit" name="register" value="Valider l'inscription" class="submitBtn">
             </div>
