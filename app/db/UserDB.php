@@ -93,7 +93,7 @@ class UserDB
         }
     }
 
-    public function updateAccess(int $access)
+    public function updateUserAccess(int $access)
     {
         if(!empty($access))
         {
@@ -105,19 +105,22 @@ class UserDB
         }
     }
 
-    public function checkActivationStatus()
+    public function checkActivationStatus(int $id)
     {
-        $q = $this->pdo->prepare("SELECT IF(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 24 HOUR) <= added, :valid, :expired) AS valid 
+        if(!empty($id))
+        {
+            $q = $this->pdo->prepare("SELECT IF(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 24 HOUR) <= added, :valid, :expired) AS valid 
                                 FROM users 
                                 WHERE id = :id");
-        $q->execute(array(
-            'valid' => self::LINK_VALID,
-            'expired' => self::LINK_EXPIRED,
-            'id' => $this->getId()
-        ));
-        $data = $q->fetch(PDO::FETCH_ASSOC);
+            $q->execute(array(
+                'valid' => self::LINK_VALID,
+                'expired' => self::LINK_EXPIRED,
+                'id' => $id
+            ));
+            $data = $q->fetch(PDO::FETCH_ASSOC);
 
-        return $data['valid'];
+            return $data['valid'];
+        }
     }
 
     public function deleteUser(int $id)
@@ -187,9 +190,16 @@ class UserDB
         return true;
     }
 
-    public function getAccess()
+    public function getUserAccess(int $id)
     {
-        return $this->access;
+        if(!empty($id))
+        {
+            $q = $this->pdo->prepare('SELECT access FROM users WHERE id = :id');
+            $q->execute(array('id' => $id));
+            $access = $q->fetchColumn();
+
+            return $access;
+        }
     }
 
     public function getErrors()
