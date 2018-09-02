@@ -21,6 +21,8 @@ class UserDB
     const MEMBER_ACCOUNT = 5;
     const ADMIN_ACCOUNT = 6;
     const ACCOUNT_NOT_FOUND = 7;
+    const LINK_VALID = 8;
+    const LINK_EXPIRED = 9;
 
     public function __construct(DBConnect $db, $data)
     {
@@ -100,6 +102,30 @@ class UserDB
                 'access' => $access,
                 'id' => $this->id
             ));
+        }
+    }
+
+    public function checkActivationStatus()
+    {
+        $q = $this->pdo->prepare("SELECT IF(DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 24 HOUR) <= added, :valid, :expired) AS valid 
+                                FROM users 
+                                WHERE id = :id");
+        $q->execute(array(
+            'valid' => self::LINK_VALID,
+            'expired' => self::LINK_EXPIRED,
+            'id' => $this->getId()
+        ));
+        $data = $q->fetch(PDO::FETCH_ASSOC);
+
+        return $data['valid'];
+    }
+
+    public function deleteUser(int $id)
+    {
+        if(!empty($id))
+        {
+            $q = $this->pdo->prepare("DELETE FROM users WHERE id = :id");
+            $q->execute(array('id' => $id));
         }
     }
 
