@@ -25,13 +25,19 @@
 		<link rel="icon" sizes="16x16" href="images/favicon.ico" />
 
 		<link href="styles/styles.css" type="text/css" rel="stylesheet" media="all" />
-
-		<script src='https://www.google.com/recaptcha/api.js?render=6LemuGwUAAAAAHh2vDB1_EPxFL_ahyZabT4V2bdE'></script>
-		<script>
-			grecaptcha.ready(function() {
-				grecaptcha.execute('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', {action: 'homepage'}); // Localhost test key
-			});
-		</script>
+		<?php
+		if(strpos($_SERVER['REQUEST_URI'], 'register'))
+		{
+		?>
+			<script src='https://www.google.com/recaptcha/api.js?render=6LemuGwUAAAAAHh2vDB1_EPxFL_ahyZabT4V2bdE'></script>
+			<script>
+				grecaptcha.ready(function() {
+					grecaptcha.execute('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', {action: 'homepage'}); // Localhost test key
+				});
+			</script>
+		<?php
+		}
+		?>
 	</head>
 
 	<body>
