@@ -2,15 +2,17 @@
 
 namespace App\DB;
 
+use \PDO;
+
 class UserDB
 {
+    private $id;
     private $login;
     private $password;
     private $email;
     private $access;
     private $activationKey;
     private $pdo;
-    private $errors = [];
 
     const WRONG_INFO = 1;
     const LOGIN_NOT_AVAILABLE = 2;
@@ -29,7 +31,7 @@ class UserDB
         }
     }
 
-    private function hydrate($data)
+    public function hydrate($data)
     {
         foreach($data as $k => $v)
         {
@@ -38,6 +40,14 @@ class UserDB
             {
                 $this->$method($v);
             }
+        }
+    }
+
+    private function setId($id)
+    {
+        if(!empty($id))
+        {
+            $this->id = (int) $id;
         }
     }
 
@@ -69,7 +79,7 @@ class UserDB
     {
         if(!empty($access))
         {
-            $this->access = $access;
+            $this->access = (int) $access;
         }
     }
 
@@ -81,20 +91,45 @@ class UserDB
         }
     }
 
+    public function updateAccess(int $access)
+    {
+        if(!empty($access))
+        {
+            $q = $this->pdo->prepare("UPDATE users SET access = :access WHERE id = :id");
+            $q->execute(array(
+                'access' => $access,
+                'id' => $this->id
+            ));
+        }
+    }
+
+    public static function getUserByKey(DBConnect $db, string $activationKey)
+    {
+        if(!empty($activationKey))
+        {
+            $q = $db->getPDO()->prepare("SELECT * FROM users WHERE activationKey = :activationKey");
+            $q->execute(array('activationKey' => $activationKey));
+            $data = $q->fetch(PDO::FETCH_ASSOC);
+
+            return new UserDB($db, $data);
+        }
+    }
+
     public function addUser()
     {
-        if(!empty($this->errors))
+        if(!empty($this->getErrors()))
         {
             return null;
         }
 
         $q = $this->pdo->prepare("INSERT INTO users(login, password, email, added, activationKey, access) 
-                                  VALUES(:login, :password, :email, NOW(), :activationKey, 0)");
+                                  VALUES(:login, :password, :email, NOW(), :activationKey, :access)");
         $q->execute(array(
             'login' => $this->login,
             'password' => $this->password,
             'email' => $this->email,
-            'activationKey' => $this->activationKey
+            'activationKey' => $this->activationKey,
+            'access' => self::NEW_ACCOUNT
         ));
     }
 
@@ -128,27 +163,7 @@ class UserDB
 
     public function getAccess()
     {
-        if(!empty($this->activationKey))
-        {
-            $q = $this->pdo->prepare('SELECT access FROM users WHERE activationKey = :key');
-            $q->execute(array('key' => $this->activationKey));
-            $access = $q->fetchColumn();
-        }
-        
-        switch($access)
-        {
-            case 1:
-                return self::NEW_ACCOUNT;
-                break;
-            case 2:
-                return self::MEMBER_ACCOUNT;
-                break;
-            case 3:
-                return self::ADMIN_ACCOUNT;
-                break;
-            default:
-                return self::ACCOUNT_NOT_FOUND;
-        }
+        return $this->access;
     }
 
     public function getErrors()
@@ -157,37 +172,24 @@ class UserDB
 
         if(empty($this->login) || empty($this->password) || empty($this->email) || empty($this->activationKey))
         {
-            $this->errors[] = self::WRONG_INFO;
+            $errors[] = self::WRONG_INFO;
         }
 
         if(!$this->loginAvailability())
         {
-            $this->errors[] = self::LOGIN_NOT_AVAILABLE;
+            $errors[] = self::LOGIN_NOT_AVAILABLE;
         }
 
         if(!$this->emailAvailability())
         {
-            $this->errors[] = self::EMAIL_NOT_AVAILABLE;
-        }
-
-        foreach($this->errors as $error)
-        {
-            switch($error)
-            {
-                case self::WRONG_INFO:
-                    $errors[] = 'Les informations fournies pour la création d\'un nouveau compte sont erronnées.';
-                    break;
-                case self::LOGIN_NOT_AVAILABLE:
-                    $errors[] = 'Le pseudo choisi est déjà utilisé, veuillez en choisir un autre.';
-                    break;
-                case self::EMAIL_NOT_AVAILABLE:
-                    $errors[] = 'L\'adresse e-mail choisie est déjà utilisée, veuillez en choisir une autre.';
-                    break;
-                default:
-                    $errors = [];
-            }
+            $errors[] = self::EMAIL_NOT_AVAILABLE;
         }
 
         return $errors;
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 }

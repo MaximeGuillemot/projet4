@@ -39,23 +39,36 @@ if(isset($_POST['register']) && isset($_POST['g-recaptcha-response']) && $_SESSI
         if(empty($register->getErrors()))
         {
             $userdb = new UserDB($db, $user);
-            $errors = $userdb->getErrors();       
-
+            $errors = $userdb->getErrors();     
+              
             if(!empty($errors))
             {
                 foreach($errors as $error)
                 {
-                    echo '<p>' . $error . '</p>';
+                    switch($error)
+                    {
+                        case UserDB::WRONG_INFO:
+                            echo '<p>Les informations fournies pour la création d\'un nouveau compte sont erronnées.</p>';
+                            break;
+                        case UserDB::LOGIN_NOT_AVAILABLE:
+                            echo '<p>Le pseudo choisi est déjà utilisé, veuillez en choisir un autre.</p>';
+                            break;
+                        case UserDB::EMAIL_NOT_AVAILABLE:
+                            echo '<p>L\'adresse e-mail choisie est déjà utilisée, veuillez en choisir une autre.</p>';
+                            break;
+                        default:
+                            $errors = [];
+                    }
                 }
 
                 unset($userdb, $_POST['register']);
             }
             else
             {
-                //$sendMail = new SendActivationMail($user);
-                //$sendMail->sendMail();
-                //$userdb->addUser();
-                echo 'gg tu t\'es inscrit';
+                $sendMail = new SendActivationMail($user);
+                $sendMail->sendMail();
+                $userdb->addUser();
+                echo '<p>Un e-mail vous a été envoyé pour activer votre compte et finaliser votre inscription.</p>';
             }
         }
         else
